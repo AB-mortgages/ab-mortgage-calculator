@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Ashaq Brokers Mortgages Calculator</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+
+    :root {
+      --primary-color: #111111;
+      --secondary-color: #2a2a2a;
+      --background-color: #ffffff;
+      --card-background: #ffffff;
+      --border-color: #e5e5e5;
+      --text-light: #666666;
+      --shadow: 0 8px 30px rgba(0,0,0,0.05);
+      --font-family: 'Montserrat', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 60px 20px;
+      background: #ffffff;
+      font-family: var(--font-family);
+      color: var(--primary-color);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .calculator-container {
+      width: 100%;
+      max-width: 560px;
+      background: var(--card-background);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .logo img {
+      width: 260px;
+      max-width: 90%;
+      height: auto;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 35px;
+      letter-spacing: -0.5px;
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      font-size: 15px;
+      font-family: var(--font-family);
+      transition: all 0.2s ease;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #111111;
+    }
+
+    .button-group {
+      margin-top: 30px;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: var(--font-family);
+    }
+
+    .calculate-btn {
+      background: #111111;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    .calculate-btn:hover {
+      background: #222222;
+      transform: translateY(-1px);
+    }
+
+    .apply-btn {
+      background: #f5f5f5;
+      color: #111111;
+      border: 1px solid #dddddd;
+    }
+
+    .apply-btn:hover {
+      background: #eeeeee;
+      transform: translateY(-1px);
+    }
+
+    #results {
+      display: none;
+      margin-top: 35px;
+      padding: 28px;
+      border-radius: 18px;
+      background: #fafafa;
+      border: 1px solid #eeeeee;
+    }
+
+    #results h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 22px;
+    }
+
+    #results p {
+      margin: 12px 0;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .result-value {
+      font-weight: 700;
+      color: #111111;
+    }
+
+    .disclaimer {
+      margin-top: 20px;
+      font-size: 13px !important;
+      color: var(--text-light);
+      font-style: italic;
+    }
+
+    @media (max-width: 600px) {
+
+      body {
+        padding: 30px 15px;
+      }
+
+      .calculator-container {
+        padding: 28px 22px;
+        border-radius: 18px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .logo img {
+        width: 220px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="calculator-container">
+
+    <div class="logo">
+      <img src="ab-logo.png" alt="Ashaq Brokers Mortgages Logo">
+    </div>
+
+    <h1>Mortgage Affordability Calculator</h1>
+
+    <div class="form-group">
+      <label for="income">Annual Household Income ($)</label>
+      <input type="number" id="income" placeholder="100000">
+    </div>
+
+    <div class="form-group">
+      <label for="debts">Monthly Debt Payments ($)</label>
+      <input type="number" id="debts" placeholder="500">
+    </div>
+
+    <div class="form-group">
+      <label for="downpayment">Down Payment ($)</label>
+      <input type="number" id="downpayment" placeholder="20000">
+    </div>
+
+    <div class="form-group">
+      <label for="interest">Interest Rate (%)</label>
+      <input type="number" id="interest" value="5">
+    </div>
+
+    <div class="form-group">
+      <label for="amortization">Amortization Period</label>
+
+      <select id="amortization">
+        <option value="15">15 Years</option>
+        <option value="20">20 Years</option>
+        <option value="25" selected>25 Years</option>
+        <option value="30">30 Years</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="taxes">Annual Property Taxes ($)</label>
+      <input type="number" id="taxes" value="0">
+    </div>
+
+    <div class="button-group">
+
+      <button class="calculate-btn" onclick="calculate()">
+        Calculate Affordability
+      </button>
+
+      <a href="https://velocity-client.newton.ca/en/client/journey/home?shortCode=1cooj7h9klxc"
+         target="_blank"
+         style="text-decoration:none;">
+
+        <button type="button" class="apply-btn">
+          Apply Now
+        </button>
+
+      </a>
+
+    </div>
+
+    <div id="results">
+
+      <h2>Your Results</h2>
+
+      <p id="max-home-price"></p>
+
+      <p id="max-mortgage"></p>
+
+      <p id="monthly-payment"></p>
+
+      <p class="disclaimer">
+        Results are estimates only and do not constitute mortgage approval.
+      </p>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    function calculate() {
+
+      const income =
+        parseFloat(document.getElementById('income').value) || 0;
+
+      const monthlyDebts =
+        parseFloat(document.getElementById('debts').value) || 0;
+
+      const downpayment =
+        parseFloat(document.getElementById('downpayment').value) || 0;
+
+      let interestRate =
+        parseFloat(document.getElementById('interest').value) || 5;
+
+      const amortization =
+        parseInt(document.getElementById('amortization').value) || 25;
+
+      const annualTaxes =
+        parseFloat(document.getElementById('taxes').value) || 0;
+
+      const stressRate =
+        Math.max(interestRate + 2, 5.25) / 100;
+
+      interestRate = interestRate / 100;
+
+      const monthlyIncome = income / 12;
+
+      const gdsLimit = monthlyIncome * 0.39;
+
+      const tdsLimit = monthlyIncome * 0.44;
+
+      const monthlyTaxes = annualTaxes / 12;
+
+      const maxMonthlyPayment =
+        Math.min(gdsLimit, tdsLimit - monthlyDebts) - monthlyTaxes;
+
+      const months = amortization * 12;
+
+      const monthlyRate = stressRate / 12;
+
+      const mortgageFactor =
+        (monthlyRate * Math.pow(1 + monthlyRate, months)) /
+        (Math.pow(1 + monthlyRate, months) - 1);
+
+      let maxMortgage =
+        maxMonthlyPayment / mortgageFactor;
+
+      let cmhcPremium = 0;
+
+      let homePrice =
+        maxMortgage + downpayment;
+
+      if (downpayment / homePrice < 0.2) {
+
+        const loanToValue =
+          maxMortgage / homePrice;
+
+        if (loanToValue <= 0.80) {
+          cmhcPremium = 0.015;
+        }
+        else if (loanToValue <= 0.85) {
+          cmhcPremium = 0.019;
+        }
+        else if (loanToValue <= 0.90) {
+          cmhcPremium = 0.024;
+        }
+        else {
+          cmhcPremium = 0.031;
+        }
+
+        cmhcPremium =
+          maxMortgage * cmhcPremium;
+
+        maxMortgage += cmhcPremium;
+
+        homePrice =
+          maxMortgage + downpayment;
+      }
+
+      const actualMonthlyRate =
+        interestRate / 12;
+
+      const actualPaymentFactor =
+        (actualMonthlyRate * Math.pow(1 + actualMonthlyRate, months)) /
+        (Math.pow(1 + actualMonthlyRate, months) - 1);
+
+      const monthlyPayment =
+        maxMortgage * actualPaymentFactor + monthlyTaxes;
+
+      document.getElementById('max-home-price').innerHTML =
+        `<span class="result-value">Maximum Home Price:</span> $${Math.round(homePrice).toLocaleString()}`;
+
+      document.getElementById('max-mortgage').innerHTML =
+        `<span class="result-value">Maximum Mortgage:</span> $${Math.round(maxMortgage).toLocaleString()}`;
+
+      document.getElementById('monthly-payment').innerHTML =
+        `<span class="result-value">Estimated Monthly Payment:</span> $${Math.round(monthlyPayment).toLocaleString()}`;
+
+      document.getElementById('results').style.display = 'block';
+
+    }
+
+  </script>
+
+</body>
+</html>
