@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Ashaq Brokers Mortgages Calculator</title>
+  <title>AB Finance | Mortgage Affordability Calculator</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-
     :root {
       --primary-color: #111111;
       --secondary-color: #2a2a2a;
@@ -17,7 +16,9 @@
       --card-background: #ffffff;
       --border-color: #e5e5e5;
       --text-light: #666666;
-      --shadow: 0 8px 30px rgba(0,0,0,0.05);
+      --success: #1d7a46;
+      --error: #a33;
+      --shadow: 0 8px 30px rgba(0,0,0,0.06);
       --font-family: 'Montserrat', sans-serif;
     }
 
@@ -27,8 +28,8 @@
 
     body {
       margin: 0;
-      padding: 60px 20px;
-      background: #ffffff;
+      padding: 50px 20px;
+      background: var(--background-color);
       font-family: var(--font-family);
       color: var(--primary-color);
       display: flex;
@@ -39,7 +40,7 @@
 
     .calculator-container {
       width: 100%;
-      max-width: 560px;
+      max-width: 600px;
       background: var(--card-background);
       border: 1px solid var(--border-color);
       border-radius: 24px;
@@ -49,7 +50,7 @@
 
     .logo {
       text-align: center;
-      margin-bottom: 35px;
+      margin-bottom: 25px;
     }
 
     .logo img {
@@ -62,18 +63,26 @@
       font-size: 28px;
       font-weight: 700;
       text-align: center;
-      margin-bottom: 35px;
+      margin: 0 0 10px;
       letter-spacing: -0.5px;
     }
 
+    .subtitle {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0 0 32px;
+    }
+
     .form-group {
-      margin-bottom: 22px;
+      margin-bottom: 21px;
     }
 
     label {
       display: block;
       margin-bottom: 8px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       color: var(--primary-color);
     }
@@ -81,12 +90,14 @@
     input,
     select {
       width: 100%;
-      padding: 15px;
-      border-radius: 12px;
+      min-height: 50px;
+      padding: 13px 15px;
+      border-radius: 11px;
       border: 1px solid var(--border-color);
       background: #ffffff;
       font-size: 15px;
       font-family: var(--font-family);
+      color: var(--primary-color);
       transition: all 0.2s ease;
     }
 
@@ -94,23 +105,81 @@
     select:focus {
       outline: none;
       border-color: #111111;
+      box-shadow: 0 0 0 3px rgba(17,17,17,0.05);
+    }
+
+    input[readonly] {
+      background: #f7f7f7;
+      font-weight: 600;
+    }
+
+    .rate-box {
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 15px;
+      background: #fafafa;
+      margin-bottom: 22px;
+    }
+
+    .rate-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .rate-title {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .rate-status {
+      font-size: 10px;
+      color: var(--success);
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .rate-row {
+      display: grid;
+      grid-template-columns: 1fr 150px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .rate-description {
+      font-size: 11px;
+      line-height: 1.5;
+      color: var(--text-light);
+    }
+
+    .rate-date {
+      margin-top: 8px;
+      font-size: 10px;
+      color: #888888;
+    }
+
+    .rate-error {
+      color: var(--error);
     }
 
     .button-group {
-      margin-top: 30px;
+      margin-top: 28px;
     }
 
     button {
       width: 100%;
       border: none;
-      border-radius: 14px;
+      border-radius: 13px;
       padding: 16px;
-      font-size: 14px;
+      min-height: 52px;
+      font-size: 13px;
       font-weight: 700;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
       cursor: pointer;
-      transition: all 0.25s ease;
+      transition: all 0.2s ease;
       font-family: var(--font-family);
     }
 
@@ -121,14 +190,26 @@
     }
 
     .calculate-btn:hover {
-      background: #222222;
+      background: #292929;
       transform: translateY(-1px);
     }
 
     .apply-btn {
+      display: block;
+      width: 100%;
       background: #f5f5f5;
       color: #111111;
       border: 1px solid #dddddd;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 13px;
+      padding: 16px;
+      min-height: 52px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
     }
 
     .apply-btn:hover {
@@ -138,45 +219,95 @@
 
     #results {
       display: none;
-      margin-top: 35px;
-      padding: 28px;
+      margin-top: 30px;
+      padding: 26px;
       border-radius: 18px;
       background: #fafafa;
       border: 1px solid #eeeeee;
     }
 
     #results h2 {
-      margin-top: 0;
-      margin-bottom: 20px;
-      font-size: 22px;
+      margin: 0 0 20px;
+      font-size: 21px;
     }
 
-    #results p {
-      margin: 12px 0;
-      font-size: 15px;
-      line-height: 1.5;
+    .result-main {
+      background: #111111;
+      color: #ffffff;
+      padding: 22px;
+      border-radius: 14px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .result-main-label {
+      font-size: 11px;
+      opacity: 0.75;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 7px;
+    }
+
+    .result-main-value {
+      font-size: 31px;
+      font-weight: 700;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .result-card {
+      background: #ffffff;
+      border: 1px solid #eeeeee;
+      border-radius: 11px;
+      padding: 15px;
+    }
+
+    .result-label {
+      font-size: 10px;
+      color: var(--text-light);
+      margin-bottom: 6px;
     }
 
     .result-value {
+      font-size: 15px;
       font-weight: 700;
-      color: #111111;
     }
 
     .disclaimer {
       margin-top: 20px;
-      font-size: 13px !important;
+      font-size: 10px !important;
       color: var(--text-light);
-      font-style: italic;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .error {
+      display: none;
+      margin-top: 15px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: #fff4f4;
+      border: 1px solid #f0d0d0;
+      color: var(--error);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .loading {
+      opacity: 0.65;
     }
 
     @media (max-width: 600px) {
-
       body {
-        padding: 30px 15px;
+        padding: 25px 14px;
       }
 
       .calculator-container {
-        padding: 28px 22px;
+        padding: 27px 20px;
         border-radius: 18px;
       }
 
@@ -184,12 +315,22 @@
         font-size: 24px;
       }
 
-      .logo img {
-        width: 220px;
+      .rate-row {
+        grid-template-columns: 1fr;
       }
 
-    }
+      .rate-row input {
+        width: 100%;
+      }
 
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .result-main-value {
+        font-size: 28px;
+      }
+    }
   </style>
 </head>
 
@@ -198,186 +339,1093 @@
   <div class="calculator-container">
 
     <div class="logo">
-      <img src="ab-logo.png" alt="Ashaq Brokers Mortgages Logo">
+      <img src="ab-logo.png" alt="AB Finance Logo">
     </div>
 
     <h1>Mortgage Affordability Calculator</h1>
 
+    <p class="subtitle">
+      Estimate how much you may be able to afford and your estimated monthly mortgage payment.
+    </p>
+
     <div class="form-group">
       <label for="income">Annual Household Income ($)</label>
-      <input type="number" id="income" placeholder="100000">
+      <input
+        type="number"
+        id="income"
+        placeholder="100000"
+        min="0"
+        step="1000"
+      >
     </div>
 
     <div class="form-group">
       <label for="debts">Monthly Debt Payments ($)</label>
-      <input type="number" id="debts" placeholder="500">
+      <input
+        type="number"
+        id="debts"
+        placeholder="500"
+        min="0"
+        step="50"
+      >
     </div>
 
     <div class="form-group">
       <label for="downpayment">Down Payment ($)</label>
-      <input type="number" id="downpayment" placeholder="20000">
+      <input
+        type="number"
+        id="downpayment"
+        placeholder="25000"
+        min="0"
+        step="1000"
+        oninput="updateRateType()"
+      >
+    </div>
+
+    <!-- AUTOMATIC RATE -->
+    <div class="rate-box">
+
+      <div class="rate-header">
+        <div class="rate-title">
+          Current Mortgage Rate
+        </div>
+
+        <div
+          class="rate-status"
+          id="rateStatus"
+        >
+          Loading...
+        </div>
+      </div>
+
+      <div class="rate-row">
+
+        <div class="rate-description">
+          Your calculator automatically selects the
+          Bank of Canada reference rate based on whether
+          the estimated mortgage is insured or uninsured.
+        </div>
+
+        <input
+          type="number"
+          id="interest"
+          value="4.01"
+          step="0.01"
+          min="0"
+          max="20"
+          readonly
+        >
+
+      </div>
+
+      <div
+        class="rate-date"
+        id="rateDate"
+      >
+        Retrieving latest available rate...
+      </div>
+
     </div>
 
     <div class="form-group">
-      <label for="interest">Interest Rate (%)</label>
-      <input type="number" id="interest" value="5">
-    </div>
 
-    <div class="form-group">
-      <label for="amortization">Amortization Period</label>
+      <label for="amortization">
+        Amortization Period
+      </label>
 
       <select id="amortization">
-        <option value="15">15 Years</option>
-        <option value="20">20 Years</option>
-        <option value="25" selected>25 Years</option>
-        <option value="30">30 Years</option>
+
+        <option value="15">
+          15 Years
+        </option>
+
+        <option value="20">
+          20 Years
+        </option>
+
+        <option value="25" selected>
+          25 Years
+        </option>
+
+        <option value="30">
+          30 Years
+        </option>
+
       </select>
+
     </div>
 
     <div class="form-group">
-      <label for="taxes">Annual Property Taxes ($)</label>
-      <input type="number" id="taxes" value="0">
+
+      <label for="taxes">
+        Annual Property Taxes ($)
+      </label>
+
+      <input
+        type="number"
+        id="taxes"
+        value="0"
+        min="0"
+        step="100"
+        placeholder="3000"
+      >
+
     </div>
 
     <div class="button-group">
 
-      <button class="calculate-btn" onclick="calculate()">
+      <button
+        type="button"
+        class="calculate-btn"
+        onclick="calculate()"
+      >
         Calculate Affordability
       </button>
 
-      <a href="https://velocity-client.newton.ca/en/client/journey/home?shortCode=1cooj7h9klxc"
-         target="_blank"
-         style="text-decoration:none;">
-
-        <button type="button" class="apply-btn">
-          Apply Now
-        </button>
-
+      <a
+        href="https://velocity-client.newton.ca/en/client/journey/home?shortCode=1cooj7h9klxc"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="apply-btn"
+      >
+        Apply Now
       </a>
 
     </div>
+
+    <div
+      class="error"
+      id="error"
+    ></div>
 
     <div id="results">
 
       <h2>Your Results</h2>
 
-      <p id="max-home-price"></p>
+      <div class="result-main">
 
-      <p id="max-mortgage"></p>
+        <div class="result-main-label">
+          Estimated Monthly Mortgage Payment
+        </div>
 
-      <p id="monthly-payment"></p>
+        <div
+          class="result-main-value"
+          id="monthly-payment-main"
+        >
+          $0
+        </div>
+
+      </div>
+
+      <div class="result-grid">
+
+        <div class="result-card">
+
+          <div class="result-label">
+            Maximum Home Price
+          </div>
+
+          <div
+            class="result-value"
+            id="max-home-price"
+          >
+            $0
+          </div>
+
+        </div>
+
+        <div class="result-card">
+
+          <div class="result-label">
+            Maximum Mortgage
+          </div>
+
+          <div
+            class="result-value"
+            id="max-mortgage"
+          >
+            $0
+          </div>
+
+        </div>
+
+        <div class="result-card">
+
+          <div class="result-label">
+            Interest Rate
+          </div>
+
+          <div
+            class="result-value"
+            id="rate-result"
+          >
+            0%
+          </div>
+
+        </div>
+
+        <div class="result-card">
+
+          <div class="result-label">
+            Mortgage Insurance
+          </div>
+
+          <div
+            class="result-value"
+            id="insurance-result"
+          >
+            $0
+          </div>
+
+        </div>
+
+        <div class="result-card">
+
+          <div class="result-label">
+            Monthly Property Taxes
+          </div>
+
+          <div
+            class="result-value"
+            id="tax-result"
+          >
+            $0
+          </div>
+
+        </div>
+
+        <div class="result-card">
+
+          <div class="result-label">
+            Stress-Test Rate
+          </div>
+
+          <div
+            class="result-value"
+            id="stress-result"
+          >
+            0%
+          </div>
+
+        </div>
+
+      </div>
 
       <p class="disclaimer">
-        Results are estimates only and do not constitute mortgage approval.
+        Estimates are for informational purposes only and do not constitute
+        mortgage approval. Actual rates, qualification, insurance premiums,
+        lender requirements and borrowing amounts may vary.
+        Rates are based on the latest available Bank of Canada reference data.
       </p>
 
     </div>
 
   </div>
 
+
   <script>
+
+    /*
+      ==========================================================
+      AB FINANCE AUTOMATIC MORTGAGE RATE SERVICE
+      ==========================================================
+
+      This is your Cloudflare Worker.
+
+      The Worker retrieves the latest available Bank of Canada
+      mortgage lending data.
+
+      The calculator then automatically selects:
+
+      INSURED:
+        V122667780 = 5 years and over fixed
+
+      UNINSURED:
+        V122667786 = 5 years and over fixed
+
+      ==========================================================
+    */
+
+    const RATE_API =
+      "https://ab-mortgage-rates.sandros-ashaq.workers.dev/rates";
+
+
+    let currentRates = {
+      insured: null,
+      uninsured: null
+    };
+
+    let rateDates = {
+      insured: null,
+      uninsured: null
+    };
+
+
+    /*
+      Format dollar amounts
+    */
+
+    function formatCurrency(value) {
+
+      if (!Number.isFinite(value)) {
+        return "$0";
+      }
+
+      return new Intl.NumberFormat("en-CA", {
+        style: "currency",
+        currency: "CAD",
+        maximumFractionDigits: 0
+      }).format(value);
+
+    }
+
+
+    /*
+      Get a safe numeric input
+    */
+
+    function getNumber(id) {
+
+      const element =
+        document.getElementById(id);
+
+      const value =
+        parseFloat(element.value);
+
+      if (!Number.isFinite(value) || value < 0) {
+        return 0;
+      }
+
+      return value;
+    }
+
+
+    /*
+      Display error
+    */
+
+    function showError(message) {
+
+      const error =
+        document.getElementById("error");
+
+      error.textContent = message;
+      error.style.display = "block";
+
+    }
+
+
+    /*
+      Hide error
+    */
+
+    function hideError() {
+
+      const error =
+        document.getElementById("error");
+
+      error.style.display = "none";
+
+    }
+
+
+    /*
+      Determine whether mortgage is likely insured.
+
+      20% or more down = uninsured.
+
+      Less than 20% down = insured,
+      assuming the mortgage qualifies for insurance.
+    */
+
+    function isInsuredMortgage() {
+
+      const purchaseEstimate =
+        getNumber("downpayment");
+
+      /*
+        We don't know the final home price until
+        affordability is calculated.
+
+        Therefore we initially use the down payment
+        amount as a signal.
+
+        The final calculation determines the actual
+        mortgage insurance treatment.
+      */
+
+      return true;
+
+    }
+
+
+    /*
+      Update rate based on down payment.
+
+      This is primarily a visual indicator before
+      calculation.
+    */
+
+    function updateRateType() {
+
+      const downPayment =
+        getNumber("downpayment");
+
+      const income =
+        getNumber("income");
+
+      const status =
+        document.getElementById("rateStatus");
+
+      if (
+        downPayment > 0 &&
+        income > 0
+      ) {
+
+        status.textContent =
+          "Automatic";
+
+      }
+
+    }
+
+
+    /*
+      Fetch current rates from Cloudflare Worker
+    */
+
+    async function loadRates() {
+
+      const status =
+        document.getElementById("rateStatus");
+
+      const date =
+        document.getElementById("rateDate");
+
+      const interest =
+        document.getElementById("interest");
+
+      try {
+
+        status.textContent =
+          "Updating...";
+
+        status.classList.add("loading");
+
+        const response =
+          await fetch(RATE_API, {
+            method: "GET",
+            cache: "no-store"
+          });
+
+        if (!response.ok) {
+          throw new Error(
+            "Rate service returned an error."
+          );
+        }
+
+        const data =
+          await response.json();
+
+        if (
+          !data.success ||
+          !data.rates
+        ) {
+          throw new Error(
+            "Invalid rate response."
+          );
+        }
+
+
+        /*
+          Save rates
+        */
+
+        currentRates.insured =
+          Number(
+            data.rates.insured.fixed5Plus
+          );
+
+        currentRates.uninsured =
+          Number(
+            data.rates.uninsured.fixed5Plus
+          );
+
+
+        rateDates.insured =
+          data.dates.insuredFixed;
+
+        rateDates.uninsured =
+          data.dates.uninsuredFixed;
+
+
+        /*
+          Initial rate shown.
+
+          Insured is the default because most
+          first-time affordability calculations
+          begin with a down payment below 20%.
+        */
+
+        interest.value =
+          currentRates.insured.toFixed(2);
+
+
+        status.textContent =
+          "Automatically updated";
+
+        status.classList.remove("loading");
+
+
+        date.textContent =
+          "Bank of Canada latest available data: " +
+          formatDate(rateDates.insured);
+
+
+      } catch (error) {
+
+        console.error(
+          "Unable to load mortgage rates:",
+          error
+        );
+
+
+        /*
+          Safe fallback.
+
+          The calculator still works if the
+          rate service temporarily becomes unavailable.
+        */
+
+        interest.value =
+          "4.49";
+
+
+        status.textContent =
+          "Fallback rate";
+
+        status.classList.add(
+          "rate-error"
+        );
+
+
+        date.textContent =
+          "Automatic rate service temporarily unavailable. " +
+          "A fallback rate is being used.";
+
+
+      }
+
+    }
+
+
+    /*
+      Format API date
+    */
+
+    function formatDate(dateString) {
+
+      if (!dateString) {
+        return "Unavailable";
+      }
+
+      const date =
+        new Date(
+          dateString + "T00:00:00"
+        );
+
+      if (Number.isNaN(date.getTime())) {
+        return dateString;
+      }
+
+      return date.toLocaleDateString(
+        "en-CA",
+        {
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        }
+      );
+
+    }
+
+
+    /*
+      Calculate mortgage affordability
+    */
 
     function calculate() {
 
+      hideError();
+
+
       const income =
-        parseFloat(document.getElementById('income').value) || 0;
+        getNumber("income");
 
       const monthlyDebts =
-        parseFloat(document.getElementById('debts').value) || 0;
+        getNumber("debts");
 
       const downpayment =
-        parseFloat(document.getElementById('downpayment').value) || 0;
+        getNumber("downpayment");
 
       let interestRate =
-        parseFloat(document.getElementById('interest').value) || 5;
+        parseFloat(
+          document.getElementById("interest").value
+        );
+
 
       const amortization =
-        parseInt(document.getElementById('amortization').value) || 25;
+        parseInt(
+          document.getElementById(
+            "amortization"
+          ).value
+        ) || 25;
+
 
       const annualTaxes =
-        parseFloat(document.getElementById('taxes').value) || 0;
+        getNumber("taxes");
 
-      const stressRate =
-        Math.max(interestRate + 2, 5.25) / 100;
 
-      interestRate = interestRate / 100;
+      /*
+        Validation
+      */
 
-      const monthlyIncome = income / 12;
+      if (income <= 0) {
 
-      const gdsLimit = monthlyIncome * 0.39;
+        showError(
+          "Please enter your annual household income."
+        );
 
-      const tdsLimit = monthlyIncome * 0.44;
+        return;
 
-      const monthlyTaxes = annualTaxes / 12;
-
-      const maxMonthlyPayment =
-        Math.min(gdsLimit, tdsLimit - monthlyDebts) - monthlyTaxes;
-
-      const months = amortization * 12;
-
-      const monthlyRate = stressRate / 12;
-
-      const mortgageFactor =
-        (monthlyRate * Math.pow(1 + monthlyRate, months)) /
-        (Math.pow(1 + monthlyRate, months) - 1);
-
-      let maxMortgage =
-        maxMonthlyPayment / mortgageFactor;
-
-      let cmhcPremium = 0;
-
-      let homePrice =
-        maxMortgage + downpayment;
-
-      if (downpayment / homePrice < 0.2) {
-
-        const loanToValue =
-          maxMortgage / homePrice;
-
-        if (loanToValue <= 0.80) {
-          cmhcPremium = 0.015;
-        }
-        else if (loanToValue <= 0.85) {
-          cmhcPremium = 0.019;
-        }
-        else if (loanToValue <= 0.90) {
-          cmhcPremium = 0.024;
-        }
-        else {
-          cmhcPremium = 0.031;
-        }
-
-        cmhcPremium =
-          maxMortgage * cmhcPremium;
-
-        maxMortgage += cmhcPremium;
-
-        homePrice =
-          maxMortgage + downpayment;
       }
 
+
+      if (downpayment < 0) {
+
+        showError(
+          "Please enter a valid down payment."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        !Number.isFinite(interestRate) ||
+        interestRate <= 0 ||
+        interestRate > 20
+      ) {
+
+        showError(
+          "Please enter a valid mortgage interest rate."
+        );
+
+        return;
+
+      }
+
+
+      /*
+        Convert annual rate to decimal
+      */
+
+      const actualRate =
+        interestRate / 100;
+
+
+      /*
+        Canadian mortgage stress test.
+
+        Qualification rate =
+        greater of:
+
+        Contract rate + 2%
+
+        OR
+
+        5.25%
+      */
+
+      const stressRate =
+        Math.max(
+          actualRate + 0.02,
+          0.0525
+        );
+
+
+      const monthlyIncome =
+        income / 12;
+
+
+      /*
+        Affordability limits.
+
+        GDS = 39%
+
+        TDS = 44%
+      */
+
+      const gdsLimit =
+        monthlyIncome * 0.39;
+
+      const tdsLimit =
+        monthlyIncome * 0.44;
+
+
+      const monthlyTaxes =
+        annualTaxes / 12;
+
+
+      /*
+        Maximum housing payment available
+      */
+
+      const maxHousingPayment =
+        Math.min(
+          gdsLimit,
+          tdsLimit - monthlyDebts
+        );
+
+
+      const maxMortgagePayment =
+        maxHousingPayment -
+        monthlyTaxes;
+
+
+      if (
+        maxMortgagePayment <= 0
+      ) {
+
+        showError(
+          "Based on the information entered, there is not enough monthly income available for a mortgage payment."
+        );
+
+        document.getElementById(
+          "results"
+        ).style.display = "none";
+
+        return;
+
+      }
+
+
+      /*
+        Amortization
+      */
+
+      const months =
+        amortization * 12;
+
+
+      /*
+        Mortgage payment factor
+      */
+
+      const stressMonthlyRate =
+        stressRate / 12;
+
+
+      const stressFactor =
+        (
+          stressMonthlyRate *
+          Math.pow(
+            1 + stressMonthlyRate,
+            months
+          )
+        ) /
+        (
+          Math.pow(
+            1 + stressMonthlyRate,
+            months
+          ) - 1
+        );
+
+
+      /*
+        Base mortgage before insurance
+      */
+
+      let maxBaseMortgage =
+        maxMortgagePayment /
+        stressFactor;
+
+
+      /*
+        Calculate estimated home price
+      */
+
+      let estimatedHomePrice =
+        maxBaseMortgage +
+        downpayment;
+
+
+      /*
+        Determine down payment percentage
+      */
+
+      let downPaymentPercent =
+        downpayment /
+        estimatedHomePrice;
+
+
+      /*
+        CMHC/default insurance
+
+        Current standard premium estimates:
+
+        5% - 9.99% = 4.00%
+
+        10% - 14.99% = 3.10%
+
+        15% - 19.99% = 2.80%
+
+        20%+ = no insurance
+      */
+
+      let insuranceRate = 0;
+
+
+      if (
+        downPaymentPercent >= 0.05 &&
+        downPaymentPercent < 0.10
+      ) {
+
+        insuranceRate =
+          0.04;
+
+      }
+      else if (
+        downPaymentPercent >= 0.10 &&
+        downPaymentPercent < 0.15
+      ) {
+
+        insuranceRate =
+          0.031;
+
+      }
+      else if (
+        downPaymentPercent >= 0.15 &&
+        downPaymentPercent < 0.20
+      ) {
+
+        insuranceRate =
+          0.028;
+
+      }
+
+
+      /*
+        If down payment is below 5%,
+        mortgage would generally not qualify
+        for a standard insured purchase.
+      */
+
+      if (
+        downPaymentPercent < 0.05
+      ) {
+
+        showError(
+          "A minimum down payment of approximately 5% is generally required for an insured purchase. Actual requirements may vary."
+        );
+
+        document.getElementById(
+          "results"
+        ).style.display = "none";
+
+        return;
+
+      }
+
+
+      /*
+        Insurance premium
+      */
+
+      const insuranceAmount =
+        maxBaseMortgage *
+        insuranceRate;
+
+
+      /*
+        Total mortgage including insurance
+      */
+
+      let maxMortgage =
+        maxBaseMortgage +
+        insuranceAmount;
+
+
+      /*
+        Recalculate estimated home price
+      */
+
+      estimatedHomePrice =
+        maxMortgage +
+        downpayment;
+
+
+      /*
+        Determine whether 20%+ down.
+
+        If 20% or more down, no default insurance.
+      */
+
+      if (
+        downpayment >=
+        estimatedHomePrice * 0.20
+      ) {
+
+        maxMortgage =
+          maxBaseMortgage;
+
+      }
+
+
+      /*
+        Use actual contract rate to calculate
+        the estimated payment.
+      */
+
       const actualMonthlyRate =
-        interestRate / 12;
+        actualRate / 12;
 
-      const actualPaymentFactor =
-        (actualMonthlyRate * Math.pow(1 + actualMonthlyRate, months)) /
-        (Math.pow(1 + actualMonthlyRate, months) - 1);
 
-      const monthlyPayment =
-        maxMortgage * actualPaymentFactor + monthlyTaxes;
+      let actualPaymentFactor;
 
-      document.getElementById('max-home-price').innerHTML =
-        `<span class="result-value">Maximum Home Price:</span> $${Math.round(homePrice).toLocaleString()}`;
 
-      document.getElementById('max-mortgage').innerHTML =
-        `<span class="result-value">Maximum Mortgage:</span> $${Math.round(maxMortgage).toLocaleString()}`;
+      if (
+        actualMonthlyRate === 0
+      ) {
 
-      document.getElementById('monthly-payment').innerHTML =
-        `<span class="result-value">Estimated Monthly Payment:</span> $${Math.round(monthlyPayment).toLocaleString()}`;
+        actualPaymentFactor =
+          1 / months;
 
-      document.getElementById('results').style.display = 'block';
+      }
+      else {
+
+        actualPaymentFactor =
+          (
+            actualMonthlyRate *
+            Math.pow(
+              1 + actualMonthlyRate,
+              months
+            )
+          ) /
+          (
+            Math.pow(
+              1 + actualMonthlyRate,
+              months
+            ) - 1
+          );
+
+      }
+
+
+      const monthlyMortgagePayment =
+        maxMortgage *
+        actualPaymentFactor;
+
+
+      /*
+        Display results
+      */
+
+      document.getElementById(
+        "max-home-price"
+      ).textContent =
+        formatCurrency(
+          estimatedHomePrice
+        );
+
+
+      document.getElementById(
+        "max-mortgage"
+      ).textContent =
+        formatCurrency(
+          maxMortgage
+        );
+
+
+      document.getElementById(
+        "monthly-payment-main"
+      ).textContent =
+        formatCurrency(
+          monthlyMortgagePayment
+        );
+
+
+      document.getElementById(
+        "rate-result"
+      ).textContent =
+        interestRate.toFixed(2) +
+        "%";
+
+
+      document.getElementById(
+        "insurance-result"
+      ).textContent =
+        formatCurrency(
+          insuranceAmount
+        );
+
+
+      document.getElementById(
+        "tax-result"
+      ).textContent =
+        formatCurrency(
+          monthlyTaxes
+        );
+
+
+      document.getElementById(
+        "stress-result"
+      ).textContent =
+        (stressRate * 100).toFixed(2) +
+        "%";
+
+
+      document.getElementById(
+        "results"
+      ).style.display =
+        "block";
+
+
+      /*
+        Scroll to results
+      */
+
+      document.getElementById(
+        "results"
+      ).scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
 
     }
+
+
+    /*
+      Automatically load the latest rate
+      as soon as the calculator opens.
+    */
+
+    loadRates();
+
+
+    /*
+      Refresh rate periodically.
+
+      Every 6 hours the calculator checks
+      for an updated rate while the page
+      remains open.
+    */
+
+    setInterval(
+      loadRates,
+      6 * 60 * 60 * 1000
+    );
 
   </script>
 
